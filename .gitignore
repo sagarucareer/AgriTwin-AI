@@ -31,3 +31,11 @@ Thumbs.db
 # Dataset Cache
 *.zip
 *.tar
+
+#Dataset
+#Disease Dataset
+ml/datasets/disease_dataset/raw/*
+!ml/datasets/disease_dataset/raw/.gitkeep
+
+ml/datasets/disease_dataset/processed/*
+!ml/datasets/disease_dataset/processed/.gitkeep
