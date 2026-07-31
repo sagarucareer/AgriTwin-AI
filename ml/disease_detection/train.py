@@ -1,9 +1,8 @@
 import tensorflow as tf
-
 from tensorflow.keras.applications import EfficientNetB3
 from tensorflow.keras.layers import (
-    Dense,
     GlobalAveragePooling2D,
+    Dense,
     BatchNormalization,
     Dropout,
 )
@@ -13,68 +12,60 @@ from tensorflow.keras.callbacks import (
     EarlyStopping,
     ReduceLROnPlateau,
 )
-
 from ml.config import (
     IMAGE_SIZE,
-    LEARNING_RATE,
-    EPOCHS,
+    INITIAL_LR,
+    FINE_TUNE_LR,
+    INITIAL_EPOCHS,
+    FINE_TUNE_EPOCHS,
     MODEL_DIR,
     MODEL_NAME,
 )
-
 from ml.disease_detection.preprocess import get_data_generators
 
 def main():
-    
+
     #Load Dataset
     train_generator, validation_generator = get_data_generators()
 
-    #Build Base Model
+    #Build EfficientNetB3
     base_model = EfficientNetB3(
-        weights="imagenet",
         include_top=False,
-        input_shape=(*IMAGE_SIZE, 3),
+        weights="imagenet",
+        input_shape=(*IMAGE_SIZE, 3)
     )
 
-    #Freeze all layers
+    #Freeze entire backbone
     base_model.trainable = False
 
     #Classification Head
     x = base_model.output
     x = GlobalAveragePooling2D()(x)
     x = BatchNormalization()(x)
-    x = Dense(256, activation="relu")(x)
-    x = Dropout(0.4)(x)
-    x = Dense(64, activation="relu")(x)
+    x = Dense(512,activation="relu")(x)
+    x = Dropout(0.5)(x)
+    x = Dense(256,activation="relu")(x)
     x = Dropout(0.3)(x)
     output = Dense(train_generator.num_classes, activation="softmax")(x)
 
-    #Create Model
     model = Model(
         inputs=base_model.input,
         outputs=output
     )
 
-    #Compile Model
+    #Compile Stage 1
     model.compile(
         optimizer=tf.keras.optimizers.Adam(
-            learning_rate=LEARNING_RATE
+            learning_rate=INITIAL_LR
         ),
-        loss="categorical_crossentropy",
+        loss=tf.keras.losses.CategoricalCrossentropy(
+            label_smoothing=0.1
+        ),
         metrics=["accuracy"]
     )
 
-    #Model Summary
     model.summary()
 
-    print("\n******** Training Configuration ********")
-    print(f"Image Size     : {IMAGE_SIZE}")
-    print(f"Epochs         : {EPOCHS}")
-    print(f"Learning Rate  : {LEARNING_RATE}")
-    print(f"Classes        : {train_generator.num_classes}")
-    print("***************************************\n")
-
-    #Callbacks
     callbacks = [
         ModelCheckpoint(
             filepath=f"{MODEL_DIR}/{MODEL_NAME}",
@@ -85,35 +76,60 @@ def main():
         ),
         EarlyStopping(
             monitor="val_loss",
-            patience=6,
+            patience=5,
             restore_best_weights=True,
             verbose=1
         ),
         ReduceLROnPlateau(
             monitor="val_loss",
             factor=0.2,
-            patience=3,
-            min_lr=1e-6,
+            patience=2,
             verbose=1
         )
     ]
 
-    #Train Model
-    history = model.fit(
+    #Training
+    model.fit(
         train_generator,
         validation_data=validation_generator,
-        epochs=EPOCHS,
+        epochs=INITIAL_EPOCHS,
         callbacks=callbacks
     )
 
+    #Fine Tuning
+    base_model.trainable = True
+
+    for layer in base_model.layers[:-30]:
+        layer.trainable = False
+
+    model.compile(
+        optimizer=tf.keras.optimizers.Adam(
+            learning_rate=FINE_TUNE_LR
+        ),
+        loss=tf.keras.losses.CategoricalCrossentropy(
+            label_smoothing=0.1
+        ),
+        metrics=["accuracy"]
+    )
+
+    #Training
+    model.fit(
+        train_generator,
+        validation_data=validation_generator,
+        initial_epoch=INITIAL_EPOCHS,
+        epochs=INITIAL_EPOCHS + FINE_TUNE_EPOCHS,
+        callbacks=callbacks
+    )
+    
     #Save Final Model
     model.save(
         f"{MODEL_DIR}/disease_detector_final.keras"
     )
 
-    print("\n✅ Training completed successfully.")
-    print(f"📁 Best model saved to: {MODEL_DIR}/{MODEL_NAME}")
-    print(f"📁 Final model saved to: {MODEL_DIR}/disease_detector_final.keras")
+    print("\n Training completed successfully.")
+    print(f" Best model : {MODEL_DIR}/{MODEL_NAME}")
+    print(f" Final model: {MODEL_DIR}/disease_detector_final.keras")
+
 
 if __name__ == "__main__":
     main()

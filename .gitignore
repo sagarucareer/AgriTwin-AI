@@ -39,3 +39,8 @@ ml/datasets/disease_dataset/raw/*
 
 ml/datasets/disease_dataset/processed/*
 !ml/datasets/disease_dataset/processed/.gitkeep
+
+#Trained ML Models
+ml/models/*.keras
+ml/models/*.h5
+ml/models/*.hdf5

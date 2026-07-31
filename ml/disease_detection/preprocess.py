@@ -1,38 +1,29 @@
+from tensorflow.keras.applications.efficientnet import preprocess_input
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-
-from ml.config import (
-    DATASET_DIR,
-    IMAGE_SIZE,
-    BATCH_SIZE,
-    VALIDATION_SPLIT,
-    RANDOM_SEED,
-)
-
+from ml.config import *
 
 def get_data_generators():
 
     #Training Data Generator
     train_datagen = ImageDataGenerator(
-        rescale=1.0 / 255,
+        preprocessing_function=preprocess_input,
         validation_split=VALIDATION_SPLIT,
-        rotation_range=25, #Data Augmentation
-        zoom_range=0.20,
-        width_shift_range=0.15,
-        height_shift_range=0.15,
-        brightness_range=(0.8, 1.2),
-        horizontal_flip=True,
-        fill_mode="nearest"
+        rotation_range=15,
+        zoom_range=0.15,
+        width_shift_range=0.10,
+        height_shift_range=0.10,
+        horizontal_flip=True
     )
 
     #Validation Data Generator
     validation_datagen = ImageDataGenerator(
-        rescale=1.0 / 255,
+        preprocessing_function=preprocess_input,
         validation_split=VALIDATION_SPLIT
     )
 
     #Training Generator
     train_generator = train_datagen.flow_from_directory(
-        directory=DATASET_DIR,
+        DATASET_DIR,
         target_size=IMAGE_SIZE,
         batch_size=BATCH_SIZE,
         class_mode="categorical",
@@ -43,7 +34,7 @@ def get_data_generators():
 
     #Validation Generator
     validation_generator = validation_datagen.flow_from_directory(
-        directory=DATASET_DIR,
+        DATASET_DIR,
         target_size=IMAGE_SIZE,
         batch_size=BATCH_SIZE,
         class_mode="categorical",
