@@ -1,9 +1,19 @@
-#Dataset paths
-DATASET_DIR = "ml/datasets/disease_dataset/raw"
+#Disease Detection Dataset
+DISEASE_DATASET_DIR = "ml/datasets/disease_dataset/raw"
+
+#Stress Prediction Dataset
+STRESS_DATASET_PATH = "ml/datasets/stress_dataset/raw/stress_dataset.csv"
 
 #Model paths
 MODEL_DIR = "ml/models"
 MODEL_NAME = "best_disease_detector.keras"
+
+#Stress Prediction Models
+STRESS_RF_MODEL_PATH = "ml/models/stress_random_forest.pkl"
+STRESS_LABEL_ENCODER_PATH = "ml/models/stress_label_encoder.pkl"
+
+#Stress Forecasting Model
+STRESS_LSTM_MODEL_PATH = "ml/models/stress_lstm.keras"
 
 #Image configuration
 IMAGE_SIZE = (300, 300)
@@ -18,6 +28,12 @@ INITIAL_LR = 1e-3
 FINE_TUNE_LR = 1e-5
 
 VALIDATION_SPLIT = 0.20
+
+#Stress Prediction Configuration
+TEST_SIZE = 0.20
+
+#Stress Forecasting Configuration
+SEQUENCE_LENGTH = 24
 
 #Prediction configuration
 CONFIDENCE_THRESHOLD = 0.5

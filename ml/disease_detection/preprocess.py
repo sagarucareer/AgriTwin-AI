@@ -23,7 +23,7 @@ def get_data_generators():
 
     #Training Generator
     train_generator = train_datagen.flow_from_directory(
-        DATASET_DIR,
+        DISEASE_DATASET_DIR,
         target_size=IMAGE_SIZE,
         batch_size=BATCH_SIZE,
         class_mode="categorical",
@@ -34,7 +34,7 @@ def get_data_generators():
 
     #Validation Generator
     validation_generator = validation_datagen.flow_from_directory(
-        DATASET_DIR,
+        DISEASE_DATASET_DIR,
         target_size=IMAGE_SIZE,
         batch_size=BATCH_SIZE,
         class_mode="categorical",
