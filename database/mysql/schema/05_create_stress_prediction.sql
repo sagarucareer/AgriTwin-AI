@@ -6,3 +6,10 @@ CREATE TABLE stress_prediction (
     times_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(plant_id) REFERENCES plant(plant_id) ON DELETE CASCADE
 );
+
+ALTER TABLE stress_prediction
+ADD COLUMN prediction_type
+ENUM('Current','Forecast')
+NOT NULL
+DEFAULT 'Current'
+AFTER plant_id;

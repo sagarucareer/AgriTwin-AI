@@ -7,3 +7,14 @@ CREATE TABLE stress_forecast(
     time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (plant_id) REFERENCES plant(plant_id) ON DELETE CASCADE
 );
+
+ALTER TABLE stress_forecast
+ADD COLUMN predicted_soil_moisture FLOAT NOT NULL AFTER forecast_time,
+ADD COLUMN predicted_solar_radiation FLOAT NOT NULL AFTER predicted_soil_moisture,
+ADD COLUMN predicted_air_temperature FLOAT NOT NULL AFTER predicted_solar_radiation,
+ADD COLUMN predicted_relative_humidity FLOAT NOT NULL AFTER predicted_air_temperature,
+ADD COLUMN predicted_vpd FLOAT NOT NULL AFTER predicted_relative_humidity;
+
+ALTER TABLE stress_forecast
+DROP COLUMN predicted_stress,
+DROP COLUMN confidence;
