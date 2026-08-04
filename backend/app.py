@@ -1,10 +1,10 @@
 from flask import Flask
 
-from routes.disease import disease_bp
-from routes.stress import stress_bp
-from routes.forecast import forecast_bp
-from routes.irrigation import irrigation_bp
-from routes.dashboard import dashboard_bp
+from backend.routes.disease import disease_bp
+from backend.routes.stress import stress_bp
+from backend.routes.forecast import forecast_bp
+from backend.routes.irrigation import irrigation_bp
+from backend.routes.dashboard import dashboard_bp
 
 app = Flask(__name__)
 
