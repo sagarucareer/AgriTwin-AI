@@ -37,7 +37,7 @@ Thumbs.db
 ml/datasets/disease_dataset/raw/*
 !ml/datasets/disease_dataset/raw/.gitkeep
 
-#Disease Dataset
+#Stress Dataset
 ml/datasets/stress_dataset/raw/*
 !ml/datasets/stress_dataset/raw/.gitkeep
 
