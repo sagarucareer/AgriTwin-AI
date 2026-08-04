@@ -6,3 +6,6 @@ CREATE TABLE irrigation_recommendation(
     time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(plant_id) REFERENCES plant(plant_id) ON DELETE CASCADE
 );
+
+ALTER TABLE irrigation_recommendation
+CHANGE COLUMN recommended_water_ml pump_duration_seconds INT NOT NULL;

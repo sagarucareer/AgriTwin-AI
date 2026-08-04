@@ -37,8 +37,9 @@ Thumbs.db
 ml/datasets/disease_dataset/raw/*
 !ml/datasets/disease_dataset/raw/.gitkeep
 
-ml/datasets/disease_dataset/processed/*
-!ml/datasets/disease_dataset/processed/.gitkeep
+#Disease Dataset
+ml/datasets/stress_dataset/raw/*
+!ml/datasets/stress_dataset/raw/.gitkeep
 
 #Trained ML Models
 ml/models/*.keras

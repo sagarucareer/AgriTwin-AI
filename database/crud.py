@@ -36,7 +36,14 @@ def add_plant(plant_name, crop_type, location, date_planted):
 
     return True
 
-def save_sensor_reading(plant_id, temperature, humidity, soil_moisture):
+def save_sensor_reading(
+    plant_id,
+    soil_moisture,
+    solar_radiation,
+    air_temperature,
+    relative_humidity,
+    vpd
+):
 
     connection = get_connection()
 
@@ -47,15 +54,24 @@ def save_sensor_reading(plant_id, temperature, humidity, soil_moisture):
 
     query = """
     INSERT INTO sensor_reading
-    (plant_id, temperature, humidity, soil_moisture)
-    VALUES (%s, %s, %s, %s)
+    (
+        plant_id,
+        soil_moisture,
+        solar_radiation,
+        air_temperature,
+        relative_humidity,
+        vpd
+    )
+    VALUES (%s, %s, %s, %s, %s, %s)
     """
 
     values = (
         plant_id,
-        temperature,
-        humidity,
-        soil_moisture
+        soil_moisture,
+        solar_radiation,
+        air_temperature,
+        relative_humidity,
+        vpd
     )
 
     cursor.execute(query, values)
@@ -98,7 +114,12 @@ def save_disease_prediction(plant_id, image_path, predicted_disease, confidence)
 
     return True
 
-def save_stress_prediction(plant_id, stress_level,confidence):
+def save_stress_prediction(
+    plant_id,
+    prediction_type,
+    stress_level,
+    confidence
+):
 
     connection = get_connection()
 
@@ -109,12 +130,18 @@ def save_stress_prediction(plant_id, stress_level,confidence):
 
     query = """
     INSERT INTO stress_prediction
-    (plant_id, stress_level, confidence)
-    VALUES (%s, %s, %s)
+    (
+        plant_id,
+        prediction_type,
+        stress_level,
+        confidence
+    )
+    VALUES (%s, %s, %s, %s)
     """
 
     values = (
         plant_id,
+        prediction_type,
         stress_level,
         confidence
     )
@@ -128,7 +155,15 @@ def save_stress_prediction(plant_id, stress_level,confidence):
 
     return True
 
-def save_stress_forecast(plant_id, forecast_time, predicted_stress, confidence):
+def save_stress_forecast(
+    plant_id,
+    forecast_time,
+    predicted_soil_moisture,
+    predicted_solar_radiation,
+    predicted_air_temperature,
+    predicted_relative_humidity,
+    predicted_vpd
+):
 
     connection = get_connection()
 
@@ -139,15 +174,26 @@ def save_stress_forecast(plant_id, forecast_time, predicted_stress, confidence):
 
     query = """
     INSERT INTO stress_forecast
-    (plant_id, forecast_time, predicted_stress, confidence)
-    VALUES (%s, %s, %s, %s)
+    (
+        plant_id,
+        forecast_time,
+        predicted_soil_moisture,
+        predicted_solar_radiation,
+        predicted_air_temperature,
+        predicted_relative_humidity,
+        predicted_vpd
+    )
+    VALUES (%s, %s, %s, %s, %s, %s, %s)
     """
 
     values = (
         plant_id,
         forecast_time,
-        predicted_stress,
-        confidence
+        predicted_soil_moisture,
+        predicted_solar_radiation,
+        predicted_air_temperature,
+        predicted_relative_humidity,
+        predicted_vpd
     )
 
     cursor.execute(query, values)
@@ -159,7 +205,11 @@ def save_stress_forecast(plant_id, forecast_time, predicted_stress, confidence):
 
     return True
 
-def save_irrigation_recommendation(plant_id, recommended_water_ml, reason):
+def save_irrigation_recommendation(
+    plant_id,
+    pump_duration_seconds,
+    reason
+):
 
     connection = get_connection()
 
@@ -170,13 +220,13 @@ def save_irrigation_recommendation(plant_id, recommended_water_ml, reason):
 
     query = """
     INSERT INTO irrigation_recommendation
-    (plant_id, recommended_water_ml, reason)
+    (plant_id, pump_duration_seconds, reason)
     VALUES (%s, %s, %s)
     """
 
     values = (
         plant_id,
-        recommended_water_ml,
+        pump_duration_seconds,
         reason
     )
 
