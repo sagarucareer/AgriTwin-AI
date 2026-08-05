@@ -294,3 +294,176 @@ def get_latest_sensor_reading(plant_id):
     connection.close()
 
     return result
+
+def get_latest_sensor_sequence(plant_id, limit=24):
+
+    connection = get_connection()
+
+    if connection is None:
+        return None
+
+    cursor = connection.cursor(dictionary=True)
+
+    query = """
+    SELECT
+        soil_moisture,
+        solar_radiation,
+        air_temperature,
+        relative_humidity,
+        vpd
+    FROM sensor_reading
+    WHERE plant_id = %s
+    ORDER BY time_stamp DESC
+    LIMIT %s
+    """
+
+    cursor.execute(
+        query,
+        (
+            plant_id,
+            limit
+        )
+    )
+
+    result = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    result.reverse()
+
+    return result
+
+def get_latest_disease_prediction(plant_id):
+
+    connection = get_connection()
+
+    if connection is None:
+        return None
+
+    cursor = connection.cursor(dictionary=True)
+
+    query = """
+    SELECT *
+    FROM disease_prediction
+    WHERE plant_id = %s
+    ORDER BY time_stamp DESC
+    LIMIT 1
+    """
+
+    cursor.execute(query, (plant_id,))
+
+    result = cursor.fetchone()
+
+    cursor.close()
+    connection.close()
+
+    return result
+
+
+def get_latest_stress_prediction(plant_id):
+
+    connection = get_connection()
+
+    if connection is None:
+        return None
+
+    cursor = connection.cursor(dictionary=True)
+
+    query = """
+    SELECT *
+    FROM stress_prediction
+    WHERE plant_id = %s
+    ORDER BY time_stamp DESC
+    LIMIT 1
+    """
+
+    cursor.execute(query, (plant_id,))
+
+    result = cursor.fetchone()
+
+    cursor.close()
+    connection.close()
+
+    return result
+
+
+def get_latest_stress_forecast(plant_id):
+
+    connection = get_connection()
+
+    if connection is None:
+        return None
+
+    cursor = connection.cursor(dictionary=True)
+
+    query = """
+    SELECT *
+    FROM stress_forecast
+    WHERE plant_id = %s
+    ORDER BY forecast_time DESC
+    LIMIT 1
+    """
+
+    cursor.execute(query, (plant_id,))
+
+    result = cursor.fetchone()
+
+    cursor.close()
+    connection.close()
+
+    return result
+
+
+def get_latest_irrigation(plant_id):
+
+    connection = get_connection()
+
+    if connection is None:
+        return None
+
+    cursor = connection.cursor(dictionary=True)
+
+    query = """
+    SELECT *
+    FROM irrigation_recommendation
+    WHERE plant_id = %s
+    ORDER BY time_stamp DESC
+    LIMIT 1
+    """
+
+    cursor.execute(query, (plant_id,))
+
+    result = cursor.fetchone()
+
+    cursor.close()
+    connection.close()
+
+    return result
+
+
+def get_latest_alert(plant_id):
+
+    connection = get_connection()
+
+    if connection is None:
+        return None
+
+    cursor = connection.cursor(dictionary=True)
+
+    query = """
+    SELECT *
+    FROM alert
+    WHERE plant_id = %s
+    ORDER BY time_stamp DESC
+    LIMIT 1
+    """
+
+    cursor.execute(query, (plant_id,))
+
+    result = cursor.fetchone()
+
+    cursor.close()
+    connection.close()
+
+    return result

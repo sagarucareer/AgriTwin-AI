@@ -13,3 +13,6 @@ ENUM('Current','Forecast')
 NOT NULL
 DEFAULT 'Current'
 AFTER plant_id;
+
+ALTER TABLE stress_prediction
+MODIFY COLUMN confidence FLOAT NULL;

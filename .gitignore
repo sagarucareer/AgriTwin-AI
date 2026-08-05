@@ -45,3 +45,11 @@ ml/datasets/stress_dataset/raw/*
 ml/models/*.keras
 ml/models/*.h5
 ml/models/*.hdf5
+
+#Postman
+.postman/
+postman/
+
+#Uploaded images
+backend/uploads/*
+!backend/uploads/.gitkeep

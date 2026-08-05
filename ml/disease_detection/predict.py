@@ -43,15 +43,17 @@ def predict_image(image_path):
     predicted_index = np.argmax(prediction)
 
     #Confidence
-    confidence = prediction[0][predicted_index] * 100
+    confidence = float(
+        prediction[0][predicted_index] * 100
+    )
 
     #Predicted Disease
     disease = CLASS_NAMES[predicted_index]
 
     #Display prediction
-    print("\n******** PREDICTION ********")
-    print(f"Disease   : {disease}")
-    print(f"Confidence: {confidence:.2f}%")
+    # print("\n******** PREDICTION ********")
+    # print(f"Disease   : {disease}")
+    # print(f"Confidence: {confidence:.2f}%")
 
     return disease, confidence
 

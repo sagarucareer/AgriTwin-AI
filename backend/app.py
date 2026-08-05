@@ -8,6 +8,8 @@ from backend.routes.dashboard import dashboard_bp
 
 app = Flask(__name__)
 
+app.config["UPLOAD_FOLDER"] = "backend/uploads"
+
 app.register_blueprint(disease_bp)
 app.register_blueprint(stress_bp)
 app.register_blueprint(forecast_bp)

@@ -6,7 +6,7 @@ from ml.config import (
     STRESS_LABEL_ENCODER_PATH
 )
 
-
+'''
 #Load Model
 def load_model():
 
@@ -25,12 +25,14 @@ def load_label_encoder():
     )
 
     return label_encoder
+'''
+
+# Load once
+model = joblib.load(STRESS_RF_MODEL_PATH)
+label_encoder = joblib.load(STRESS_LABEL_ENCODER_PATH)
 
 
-#Predict Stress
 def predict_stress(
-    model,
-    label_encoder,
     soil_moisture,
     solar_radiation,
     air_temperature,
@@ -39,18 +41,17 @@ def predict_stress(
 ):
 
     input_data = pd.DataFrame(
-        [
-            {
-                "Soil_Moisture": soil_moisture,
-                "Solar_Radiation": solar_radiation,
-                "Air_Temperature": air_temperature,
-                "Relative_Humidity": relative_humidity,
-                "VPD": vpd
-            }
-        ]
+        [{
+            "Soil_Moisture": soil_moisture,
+            "Solar_Radiation": solar_radiation,
+            "Air_Temperature": air_temperature,
+            "Relative_Humidity": relative_humidity,
+            "VPD": vpd
+        }]
     )
 
     prediction = model.predict(input_data)
+
     stress = label_encoder.inverse_transform(
         prediction
     )[0]
@@ -60,12 +61,7 @@ def predict_stress(
 #Main Function
 def main():
 
-    model = load_model()
-    label_encoder = load_label_encoder()
-
     stress = predict_stress(
-        model=model,
-        label_encoder=label_encoder,
         soil_moisture=68.5,
         solar_radiation=52000,
         air_temperature=30.4,

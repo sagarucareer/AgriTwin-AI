@@ -10,6 +10,7 @@ from ml.config import (
 )
 
 #Load Models
+'''
 def load_models():
 
     lstm_model = load_model(STRESS_LSTM_MODEL_PATH)
@@ -17,6 +18,13 @@ def load_models():
     scaler = joblib.load(SCALER_PATH)
 
     return (lstm_model, rf_model, scaler)
+'''
+
+# Load Models Once
+lstm_model = load_model(STRESS_LSTM_MODEL_PATH)
+rf_model = joblib.load(STRESS_RF_MODEL_PATH)
+scaler = joblib.load(SCALER_PATH)
+label_encoder = joblib.load(LABEL_ENCODER_PATH)
 
 #Load Latest Readings
 def load_latest_readings():
@@ -33,7 +41,7 @@ def load_latest_readings():
     return latest_sequence
 
 #Predict Future Sensor Values
-def forecast_sensor_values(lstm_model, scaler, latest_sequence):
+def forecast_sensor_values(latest_sequence):
 
     scaled_sequence = scaler.transform(latest_sequence)
     lstm_input = np.expand_dims(scaled_sequence, axis=0)
@@ -45,11 +53,9 @@ def forecast_sensor_values(lstm_model, scaler, latest_sequence):
     return predicted_values[0]
 
 #Predict Future Stress
-def predict_future_stress(rf_model, predicted_values):
+def predict_future_stress(predicted_values):
 
     future_stress = rf_model.predict(predicted_values.reshape(1, -1))
-
-    label_encoder = joblib.load(LABEL_ENCODER_PATH)
 
     future_stress = label_encoder.inverse_transform(future_stress)
 
@@ -70,19 +76,33 @@ def display_results(predicted_values, future_stress):
 
     print(f"Predicted Stress Level : {future_stress}")
 
+#Function imported in flask
+def forecast_stress(latest_sequence):
 
+    predicted_values = forecast_sensor_values(
+        latest_sequence
+    )
+
+    future_stress = predict_future_stress(
+        predicted_values
+    )
+
+    return predicted_values, future_stress
+
+#Main Function
 #Main Function
 def main():
 
-    lstm_model, rf_model, scaler = load_models()
-
     latest_sequence = load_latest_readings()
 
-    predicted_values = forecast_sensor_values(lstm_model, scaler, latest_sequence)
+    predicted_values, future_stress = forecast_stress(
+        latest_sequence
+    )
 
-    future_stress = predict_future_stress(rf_model, predicted_values)
-
-    display_results(predicted_values, future_stress)
+    display_results(
+        predicted_values,
+        future_stress
+    )
 
 
 if __name__ == "__main__":
